@@ -70,7 +70,17 @@ public class FreemarkerServlet extends HttpServlet {
 
         for (Map.Entry<String, String[]> e : request.getParameterMap().entrySet()) {
             if (e.getValue() != null && e.getValue().length == 1) {
-                data.put(e.getKey(), e.getValue()[0]);
+                String key = e.getKey();
+                String value = e.getValue()[0];
+                if (key.endsWith("_id")) {
+                    try {
+                        data.put(key, Long.parseLong(value));
+                        continue;
+                    } catch (NumberFormatException ignored) {
+                        // ignored))
+                    }
+                }
+                data.put(key, value);
             }
         }
 

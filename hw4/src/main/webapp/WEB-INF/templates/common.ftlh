@@ -109,3 +109,12 @@
         </#if>
     </#list>
 </#function>
+
+<#function findIndBy items key value>
+    <#list items as item>
+        <#if item[key] == value>
+            <#return item?index/>
+        </#if>
+    </#list>
+    <#return -1/>
+</#function>
