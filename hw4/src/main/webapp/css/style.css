@@ -58,6 +58,11 @@ header nav ul li a {
     margin-right: 1rem;
 }
 
+header nav ul li a.current {
+    padding-bottom: 2px;
+    border-bottom: 3px solid var(--caption-color);
+}
+
 .middle {
     display: flow-root;
 }

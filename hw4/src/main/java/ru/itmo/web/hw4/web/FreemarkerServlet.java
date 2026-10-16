@@ -84,6 +84,7 @@ public class FreemarkerServlet extends HttpServlet {
             }
         }
 
+        data.put("uri", request.getRequestURI());
         DataUtil.addData(request, data);
         return data;
     }
