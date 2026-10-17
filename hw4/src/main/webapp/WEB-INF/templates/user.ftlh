@@ -16,6 +16,7 @@
                 <li>id: ${u.id}</li>
                 <li>handle: ${u.handle}</li>
                 <li>name: ${u.name}</li>
+                <li>posts: <a href="/posts?user_id=${u.id}">${posts?filter(p -> p.userId == u.id)?size}</a></li>
             </ul>
         </div>
 

@@ -62,33 +62,15 @@
 
 <#macro sidebar>
     <aside>
-        <section>
-            <div class="header">Information</div>
-            <div class="body">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores enim expedita facilis
-                fugiat ipsum iste nobis reprehenderit tempore ut voluptatibus?
-            </div>
-            <div class="footer">
-                <a href="#">View all</a>
-            </div>
-        </section>
-        <section>
-            <div class="header">Information</div>
-            <div class="body">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores enim expedita facilis
-                fugiat ipsum iste nobis reprehenderit tempore ut voluptatibus?
-            </div>
-            <div class="footer">
-                <a href="#">View all</a>
-            </div>
-        </section>
-        <section>
-            <div class="header">Information</div>
-            <div class="body">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores enim expedita facilis
-                fugiat ipsum iste nobis reprehenderit tempore ut voluptatibus?
-            </div>
-            <div class="footer">
-                <a href="#">View all</a>
-            </div>
-        </section>
+        <#list posts?reverse as p>
+            <section>
+                <div class="header">Post #${p.id}</div>
+                <div class="body">${shorten(p.text)}</div>
+                <div class="footer">
+                    <a href="/post?post_id=${p.id}">View all</a>
+                </div>
+            </section>
+        </#list>
     </aside>
 </#macro>
 
@@ -103,18 +85,27 @@
     <a href="/user?handle=${user.handle}">${user.name}</a>
 </#macro>
 
-<#macro post p>
+<#-- full=false: сокращённый вид (текст до 350 символов), full=true: полный пост -->
+<#macro post p full=false>
     <#local author = findBy(users, "id", p.userId)!/>
     <article>
-        <div class="title">${p.title}</div>
+        <div class="title"><a href="/post?post_id=${p.id}">${p.title}</a></div>
         <div class="information">
             By <#if author?has_content><@userlink author/><#else>unknown</#if>
         </div>
         <div class="body">
-            <p><#if p.text?length gt 350>${p.text?substring(0, 350)}...<#else>${p.text}</#if></p>
+            <p><#if full>${p.text}<#else>${shorten(p.text)}</#if></p>
         </div>
     </article>
 </#macro>
+
+<#-- Текст длиннее 350 символов обрезается с "..." -->
+<#function shorten text>
+    <#if text?length gt 350>
+        <#return text?substring(0, 350) + "...">
+    </#if>
+    <#return text>
+</#function>
 
 <#function findBy items key value>
     <#list items as item>

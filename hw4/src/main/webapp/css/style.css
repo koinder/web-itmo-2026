@@ -192,6 +192,11 @@ article .title {
     margin-bottom: 4px;
 }
 
+article .title a {
+    color: inherit;
+    text-decoration: none;
+}
+
 article .information {
     color: var(--muted);
     font-size: 0.875rem;
