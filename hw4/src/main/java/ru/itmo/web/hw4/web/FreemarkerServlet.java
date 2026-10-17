@@ -46,12 +46,18 @@ public class FreemarkerServlet extends HttpServlet {
         request.setCharacterEncoding(UTF_8);
         response.setCharacterEncoding(UTF_8);
 
+        String uri = request.getRequestURI();
+        if (uri.isEmpty() || uri.equals("/")) {
+            response.sendRedirect("/index");
+            return;
+        }
+
         Template template;
         try {
-            template = freemarkerConfiguration.getTemplate(URLDecoder.decode(request.getRequestURI(), UTF_8) + ".ftlh");
-        } catch (TemplateNotFoundException ignored) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            return;
+            template = freemarkerConfiguration.getTemplate(URLDecoder.decode(uri, UTF_8) + ".ftlh");
+        } catch (TemplateNotFoundException | MalformedTemplateNameException ignored) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);  // 404
+            template = freemarkerConfiguration.getTemplate("/404.ftlh");
         }
 
         Map<String, Object> data = getData(request);
