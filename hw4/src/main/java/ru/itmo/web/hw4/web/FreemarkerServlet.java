@@ -46,7 +46,7 @@ public class FreemarkerServlet extends HttpServlet {
         request.setCharacterEncoding(UTF_8);
         response.setCharacterEncoding(UTF_8);
 
-        String uri = request.getRequestURI();
+        String uri = request.getRequestURI().replaceAll("/{2,}", "/");
         if (uri.isEmpty() || uri.equals("/")) {
             response.sendRedirect("/index");
             return;
@@ -60,7 +60,7 @@ public class FreemarkerServlet extends HttpServlet {
             template = freemarkerConfiguration.getTemplate("/404.ftlh");
         }
 
-        Map<String, Object> data = getData(request);
+        Map<String, Object> data = getData(request, uri);
 
         response.setContentType("text/html");
         try {
@@ -71,7 +71,7 @@ public class FreemarkerServlet extends HttpServlet {
         }
     }
 
-    private Map<String, Object> getData(HttpServletRequest request) {
+    private Map<String, Object> getData(HttpServletRequest request, String uri) {
         Map<String, Object> data = new HashMap<>();
 
         for (Map.Entry<String, String[]> e : request.getParameterMap().entrySet()) {
@@ -90,7 +90,7 @@ public class FreemarkerServlet extends HttpServlet {
             }
         }
 
-        data.put("uri", request.getRequestURI());
+        data.put("uri", uri);
         DataUtil.addData(request, data);
         return data;
     }
