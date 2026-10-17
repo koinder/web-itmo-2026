@@ -7,8 +7,8 @@
             <thead>
             <tr>
                 <th>Id</th>
-                <th>Name</th>
                 <th>Handle</th>
+                <th>Name</th>
             </tr>
             </thead>
             <tbody>
@@ -19,7 +19,7 @@
                         <#if user?? && user.id == u.id>*</#if>
                         <@c.userlink u/>
                     </td>
-                    <td>${u.handle}</td>
+                    <td>${u.name}</td>
                 </tr>
             </#list>
             </tbody>

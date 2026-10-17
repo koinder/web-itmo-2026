@@ -217,6 +217,31 @@ article .body p:last-child {
     margin-bottom: 0;
 }
 
+/* Цветные хэндлы пользователей, как на Codeforces */
+:root {
+    --user-red: #ff0000;
+    --user-green: #008000;
+    --user-blue: #0000ff;
+}
+
+.user-link {
+    text-decoration: none;
+    font-weight: bold;
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+.user-link.user-red {
+    color: var(--user-red);
+}
+
+.user-link.user-green {
+    color: var(--user-green);
+}
+
+.user-link.user-blue {
+    color: var(--user-blue);
+}
+
 footer {
     margin-top: 3rem;
     padding-top: 1rem;

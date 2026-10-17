@@ -33,7 +33,7 @@
         </div>
         <div class="enter-or-register-box">
             <#if user??>
-                <@userlink user/>
+                <@userlink user true/>
                 |
                 <a href="/logout">Logout</a>
             <#else>
@@ -80,9 +80,14 @@
     </footer>
 </#macro>
 
-<#macro userlink user>
+<#-- nameOnly=true: старый вид (имя обычной ссылкой), иначе — цветной хэндл как на Codeforces -->
+<#macro userlink user nameOnly=false>
 <#-- @ftlvariable name="user" type="ru.itmo.web.hw4.model.User" -->
-    <a href="/user?handle=${user.handle}">${user.name}</a>
+    <#if nameOnly>
+        <a href="/user?handle=${user.handle}">${user.name}</a>
+    <#else>
+        <a href="/user?handle=${user.handle}" class="user-link user-${user.color?lower_case}">${user.handle}</a>
+    </#if>
 </#macro>
 
 <#-- full=false: сокращённый вид (текст до 350 символов), full=true: полный пост -->
