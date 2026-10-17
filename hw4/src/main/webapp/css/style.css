@@ -145,6 +145,73 @@ main {
     color: var(--disable-button);
 }
 
+/* Таблица и посты — вёрстка из HW2 */
+:root {
+    --gray: #e1e1e1;
+    --white: white;
+    --light-gray: #f8f8f8;
+    --muted: #888;
+}
+
+.datatable {
+    background: var(--gray);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.datatable .caption {
+    padding: 4px 8px;
+    font-size: 0.875rem;
+}
+
+.datatable table {
+    width: 100%;
+    background: var(--white);
+    font-size: 0.8rem;
+    border-collapse: collapse;
+}
+
+.datatable th,
+.datatable td {
+    border: 1px solid var(--gray);
+    padding: 5px;
+    text-align: center;
+}
+
+.datatable tbody tr:nth-child(2n-1) {
+    background: var(--light-gray);
+}
+
+article + article {
+    margin-top: 2rem;
+}
+
+article .title {
+    color: var(--caption-color);
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+article .information {
+    color: var(--muted);
+    font-size: 0.875rem;
+}
+
+article .body {
+    margin-top: 1rem;
+    border-left: 4px solid var(--border-color);
+    padding-left: 12px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+article .body p {
+    margin: 0 0 1rem 0;
+}
+
+article .body p:last-child {
+    margin-bottom: 0;
+}
+
 footer {
     margin-top: 3rem;
     padding-top: 1rem;

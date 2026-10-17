@@ -45,6 +45,7 @@
         <nav>
             <#assign items=[
             {"href": "/index", "name": "Home"},
+            {"href": "/users", "name": "Users"},
             {"href": "/misc/help", "name": "Help"},
             {"href": "/contests", "name": "Contests"}
             ]/>
@@ -100,6 +101,19 @@
 <#macro userlink user>
 <#-- @ftlvariable name="user" type="ru.itmo.web.hw4.model.User" -->
     <a href="/user?handle=${user.handle}">${user.name}</a>
+</#macro>
+
+<#macro post p>
+    <#local author = findBy(users, "id", p.userId)!/>
+    <article>
+        <div class="title">${p.title}</div>
+        <div class="information">
+            By <#if author?has_content><@userlink author/><#else>unknown</#if>
+        </div>
+        <div class="body">
+            <p><#if p.text?length gt 350>${p.text?substring(0, 350)}...<#else>${p.text}</#if></p>
+        </div>
+    </article>
 </#macro>
 
 <#function findBy items key value>
