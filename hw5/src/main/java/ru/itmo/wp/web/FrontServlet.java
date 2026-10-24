@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -48,6 +49,9 @@ public class FrontServlet extends HttpServlet {
                 TemplateExceptionHandler.RETHROW_HANDLER);
         configuration.setLogTemplateExceptions(false);
         configuration.setWrapUncheckedExceptions(true);
+        
+        configuration.setLocalizedLookup(false);
+        // Без этого FreeMarker сам подставит IndexPage_ru.ftlh по языку операционной системы.
 
         return configuration;
     }
@@ -74,6 +78,7 @@ public class FrontServlet extends HttpServlet {
 
     private void process(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        saveLanguage(request);
         Route route = Route.newRoute(request);
         try {
             process(route, request, response);
@@ -128,7 +133,7 @@ public class FrontServlet extends HttpServlet {
             }
         }
 
-        Template template = newTemplate(pageClass.getSimpleName() + ".ftlh");
+        Template template = newTemplate(pageClass.getSimpleName(), getLanguage(request));
         response.setContentType("text/html");
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         try {
@@ -208,7 +213,43 @@ public class FrontServlet extends HttpServlet {
         return arguments;
     }
 
-    private Template newTemplate(String templateName) throws ServletException {
+    // для сессии запоминаем lang
+    private void saveLanguage(HttpServletRequest request) {
+        String lang = request.getParameter("lang");
+        if (lang != null && lang.matches("[a-z]{2}")) {
+            request.getSession().setAttribute("lang", lang);
+        }
+    }
+
+    private String getLanguage(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);   // false: не создаём сессию только ради чтения
+        if (session == null) {
+            return null;
+        }
+        return (String) session.getAttribute("lang");
+    }
+
+    // Если язык задан, ищем IndexPage_ru.ftlh. Иначе(нету файла или en) ищем IndexPage.ftlh.
+    private Template newTemplate(String pageName, String lang) throws ServletException {
+        Template template = null;
+
+        if (lang != null && !lang.equals("en")) {
+            template = findTemplate(pageName + "_" + lang + ".ftlh");
+        }
+
+        if (template == null) {
+            template = findTemplate(pageName + ".ftlh");
+        }
+
+        if (template == null) {
+            throw new ServletException("Can't find template [pageName=" + pageName + "]");
+        }
+
+        return template;
+    }
+
+    // Ищет шаблон по точному имени: сначала в исходниках, потом в собранном приложении. Нигде нет: null.
+    private Template findTemplate(String templateName) throws ServletException {
         Template template = null;
 
         if (sourceConfiguration != null) {
@@ -229,10 +270,6 @@ public class FrontServlet extends HttpServlet {
             } catch (IOException e) {
                 throw new ServletException("Can't load template [templateName=" + templateName + "]", e);
             }
-        }
-
-        if (template == null) {
-            throw new ServletException("Can't find template [templateName=" + templateName + "]");
         }
 
         return template;
