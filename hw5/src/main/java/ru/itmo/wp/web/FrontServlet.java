@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -94,15 +95,7 @@ public class FrontServlet extends HttpServlet {
             throw new NotFoundException();
         }
 
-        Method method = null;
-        for (Class<?> clazz = pageClass; method == null && clazz != null; clazz = clazz.getSuperclass()) {
-            try {
-                method = clazz.getDeclaredMethod(route.getAction(), HttpServletRequest.class, Map.class);
-            } catch (NoSuchMethodException ignored) {
-                // No operations.
-            }
-        }
-
+        Method method = findActionMethod(pageClass, route.getAction());
         if (method == null) {
             throw new NotFoundException();
         }
@@ -119,7 +112,7 @@ public class FrontServlet extends HttpServlet {
         Map<String, Object> view = new HashMap<>();
         method.setAccessible(true);
         try {
-            method.invoke(page, request, view);
+            method.invoke(page, newArguments(method, request, view));
         } catch (IllegalAccessException e) {
             throw new ServletException("Can't invoke action method [pageClass="
                     + pageClass + ", method=" + method + "]");
@@ -146,6 +139,73 @@ public class FrontServlet extends HttpServlet {
                         + pageClass + ", action=" + method + "]", e);
             }
         }
+    }
+
+    private Method findActionMethod(Class<?> pageClass, String actionName) {
+        // выделил в отдельный метод
+        // Object пропуск, на сайте его по сути нету, и смысла его вызывать тоже
+        for (Class<?> clazz = pageClass; clazz != null && clazz != Object.class; clazz = clazz.getSuperclass()) {
+            Method method = findInClass(clazz, actionName);
+            if (method != null) {
+                return method;
+            }
+        }
+
+        // Интерфейсы страницы и лесенка родителей родителей
+        for (Class<?> clazz = pageClass; clazz != null; clazz = clazz.getSuperclass()) {
+            Method method = findInInterfaces(clazz, actionName);
+            if (method != null) {
+                return method;
+            }
+        }
+        return null;
+    }
+
+    private Method findInInterfaces(Class<?> clazz, String actionName) {
+        for (Class<?> anInterface : clazz.getInterfaces()) {
+            Method method = findInClass(anInterface, actionName);
+            if (method == null) {
+                method = findInInterfaces(anInterface, actionName);   // интерфейсы самого интерфейса :)
+            }
+            if (method != null) {
+                return method;
+            }
+        }
+        return null;
+    }
+
+    private Method findInClass(Class<?> clazz, String actionName) {
+        for (Method method : clazz.getDeclaredMethods()) {
+            if (method.getName().equals(actionName)
+                    && !Modifier.isStatic(method.getModifiers())
+                    && hasSupportedParameters(method)) {
+                return method;
+            }
+        }
+        return null;
+    }
+
+    private boolean hasSupportedParameters(Method method) {
+        for (Class<?> type : method.getParameterTypes()) {
+            if (type != HttpServletRequest.class && type != Map.class) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private Object[] newArguments(Method method, HttpServletRequest request, Map<String, Object> view) {
+    // вынес для удобства проверки на то что это класс, и правильный порядок стави в параметрах метода который мы применяем
+        Class<?>[] types = method.getParameterTypes();
+        Object[] arguments = new Object[types.length];
+        for (int i = 0; i < types.length; i++) {
+            if (types[i] == HttpServletRequest.class) {
+                arguments[i] = request;
+            } else {
+                arguments[i] = view;
+            }
+        }
+        return arguments;
     }
 
     private Template newTemplate(String templateName) throws ServletException {
