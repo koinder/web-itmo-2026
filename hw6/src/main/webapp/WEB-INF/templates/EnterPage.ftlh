@@ -6,14 +6,14 @@
     <div class="enter form-box">
         <div class="header">Enter</div>
         <div class="body">
-            <form method="post" action="">
+            <form id="enter-form" method="post" action="">
                 <input type="hidden" name="action" value="enter"/>
                 <div class="field">
                     <div class="name">
-                        <label for="login">Login</label>
+                        <label for="loginOrEmail">Login or email</label>
                     </div>
                     <div class="value">
-                        <input id="login" name="login" value="${login!}"/>
+                        <input id="loginOrEmail" name="loginOrEmail" value="${loginOrEmail!}"/>
                     </div>
                 </div>
                 <div class="field">
@@ -24,13 +24,24 @@
                         <input id="password" name="password" type="password"/>
                     </div>
                 </div>
-                <#if error??>
-                    <div class="error">${error}</div>
-                </#if>
+                <div id="enter-error" class="error"></div>
                 <div class="button-field">
                     <input type="submit" value="Enter">
                 </div>
             </form>
         </div>
     </div>
+    <script>
+        $("#enter-form").on("submit", function (event) {
+            event.preventDefault();
+            const error = $("#enter-error");
+            error.text("");
+            const data = $(this).serialize();
+            ajax("/enter", data).done(function (response) {
+                if (response.error) {
+                    error.text(response.error);
+                }
+            });
+        });
+    </script>
 </@c.page>

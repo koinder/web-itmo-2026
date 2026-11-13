@@ -60,20 +60,20 @@ public class UserService {
         userRepository.save(user, getPasswordSha(password));
     }
 
-    public void validateEnter(String login, String password) throws ValidationException {
-        if (Strings.isNullOrEmpty(login)) {
-            throw new ValidationException("Login is required");
+    public void validateEnter(String loginOrEmail, String password) throws ValidationException {
+        if (Strings.isNullOrEmpty(loginOrEmail)) {
+            throw new ValidationException("Login or email is required");
         }
         if (Strings.isNullOrEmpty(password)) {
             throw new ValidationException("Password is required");
         }
-        if (findByLoginAndPassword(login, password) == null) {
-            throw new ValidationException("Invalid login or password");
+        if (findByLoginAndPassword(loginOrEmail, password) == null) {
+            throw new ValidationException("Invalid login, email or password");
         }
     }
 
-    public User findByLoginAndPassword(String login, String password) {
-        return userRepository.findByLoginAndPasswordSha(login, getPasswordSha(password));
+    public User findByLoginAndPassword(String loginOrEmail, String password) {
+        return userRepository.findByLoginAndPasswordSha(loginOrEmail, getPasswordSha(password));
     }
 
     public List<User> findAll() {
