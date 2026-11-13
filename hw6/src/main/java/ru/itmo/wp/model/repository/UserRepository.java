@@ -11,6 +11,8 @@ public interface UserRepository {
 
     User findByLoginAndPasswordSha(String login, String passwordSha);
 
+    User findByEmail(String email);
+    
     List<User> findAll();
 
     void save(User user, String passwordSha);

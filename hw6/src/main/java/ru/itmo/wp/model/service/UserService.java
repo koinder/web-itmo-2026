@@ -15,7 +15,7 @@ public class UserService {
 
     private final UserRepository userRepository = new UserRepositoryImpl();
 
-    public void validateRegistration(User user, String password) throws ValidationException {
+    public void validateRegistration(User user, String password, String passwordConfirmation) throws ValidationException {
         if (Strings.isNullOrEmpty(user.getLogin())) {
             throw new ValidationException("Login is required");
         }
@@ -29,6 +29,17 @@ public class UserService {
             throw new ValidationException("Login is already in use");
         }
 
+        String email = user.getEmail();
+        if (Strings.isNullOrEmpty(email)) {
+            throw new ValidationException("Email is required");
+        }
+        if ((email.indexOf("@") == -1) || (email.indexOf("@") != email.lastIndexOf("@"))) {
+            throw new ValidationException("Email must contain exactly one @");
+        }
+        if (userRepository.findByEmail(email)!=null) {
+            throw new ValidationException("Email is already in use");
+        }
+
         if (Strings.isNullOrEmpty(password)) {
             throw new ValidationException("Password is required");
         }
@@ -38,6 +49,11 @@ public class UserService {
         if (password.length() > 64) {
             throw new ValidationException("Password can't be longer than 64 characters");
         }
+
+        if (!password.equals(passwordConfirmation)) {
+            throw new ValidationException("Passwords do not match");
+        }
+
     }
 
     public void register(User user, String password) {
