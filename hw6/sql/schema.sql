@@ -37,3 +37,14 @@ FOREIGN KEY (`sourceUserId`) REFERENCES `User` (`id`);
 ALTER TABLE `Talk`
 ADD CONSTRAINT `fk_Talk_targetUserId`
 FOREIGN KEY (`targetUserId`) REFERENCES `User` (`id`);
+CREATE TABLE `Article` (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    `userId` BIGINT NOT NULL,
+    `title` VARCHAR(255) NOT NULL,
+    `text` TEXT NOT NULL,
+    `creationTime` DATETIME NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+ALTER TABLE `Article`
+ADD CONSTRAINT `fk_Article_userId`
+FOREIGN KEY (`userId`) REFERENCES `User` (`id`);

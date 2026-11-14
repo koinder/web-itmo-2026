@@ -36,6 +36,9 @@
         <ul>
             <li><a href="/index">Home</a></li>
             <li><a href="/users">Users</a></li>
+            <#if user??>
+                <li><a href="/article">Create article</a></li>
+            </#if>
         </ul>
     </nav>
 </header>
