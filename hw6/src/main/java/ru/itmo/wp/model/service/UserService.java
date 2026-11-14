@@ -26,9 +26,6 @@ public class UserService {
         if (user.getLogin().length() > 8) {
             throw new ValidationException("Login can't be longer than 8 letters");
         }
-        if (userRepository.findByLogin(user.getLogin()) != null) {
-            throw new ValidationException("Login is already in use");
-        }
 
         String email = user.getEmail();
         if (Strings.isNullOrEmpty(email)) {
@@ -37,8 +34,9 @@ public class UserService {
         if ((email.indexOf("@") == -1) || (email.indexOf("@") != email.lastIndexOf("@"))) {
             throw new ValidationException("Email must contain exactly one @");
         }
-        if (userRepository.findByEmail(email)!=null) {
-            throw new ValidationException("Email is already in use");
+        
+        if (userRepository.byLoginOrEmail(user.getLogin(), email)) {
+            throw new ValidationException("Login or email is already in use");
         }
 
         if (Strings.isNullOrEmpty(password)) {

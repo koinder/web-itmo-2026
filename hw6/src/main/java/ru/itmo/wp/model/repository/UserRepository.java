@@ -20,4 +20,6 @@ public interface UserRepository {
     long findCount();
 
     void updateAdmin(long id, boolean admin);
+
+    boolean byLoginOrEmail(String login, String email);
 }

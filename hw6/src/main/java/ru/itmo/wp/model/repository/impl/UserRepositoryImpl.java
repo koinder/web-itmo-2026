@@ -185,4 +185,20 @@ public class UserRepositoryImpl implements UserRepository {
             throw new RepositoryException("Can't update User admin status.", e);
         }
     }
+
+    @Override
+    public boolean byLoginOrEmail(String login, String email) {
+        try (Connection connection = DATA_SOURCE.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(
+                    "SELECT 1 FROM `User` WHERE `login`=? OR `email`=?")) {
+                statement.setString(1, login);
+                statement.setString(2, email);
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    return resultSet.next();
+                }
+            }
+        } catch (SQLException e) {
+            throw new RepositoryException("Can't check login and email.", e);
+        }
+    }
 }
