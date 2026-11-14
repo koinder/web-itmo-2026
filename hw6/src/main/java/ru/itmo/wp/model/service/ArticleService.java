@@ -7,6 +7,7 @@ import ru.itmo.wp.model.exception.ValidationException;
 import ru.itmo.wp.model.repository.ArticleRepository;
 import ru.itmo.wp.model.repository.impl.ArticleRepositoryImpl;
 
+
 public class ArticleService {
     private final ArticleRepository articleRepository =
             new ArticleRepositoryImpl();
@@ -37,5 +38,23 @@ public class ArticleService {
 
     public List<Article> findAll() {
         return articleRepository.findAll();
+    }
+
+    public List<Article> findByUserId(long userId) {
+        return articleRepository.findByUserId(userId);
+    }
+
+    public void updateHidden(long id, long userId, boolean hidden) throws ValidationException {
+        Article article = articleRepository.find(id);
+
+        if (article == null) {
+            throw new ValidationException("Article does not exist");
+        }
+
+        if (article.getUserId() != userId) {
+            throw new ValidationException("You can only change your own articles");
+        }
+
+        articleRepository.updateHidden(id, userId, hidden);
     }
 }

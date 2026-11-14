@@ -48,3 +48,5 @@ CREATE TABLE `Article` (
 ALTER TABLE `Article`
 ADD CONSTRAINT `fk_Article_userId`
 FOREIGN KEY (`userId`) REFERENCES `User` (`id`);
+ALTER TABLE `Article`
+ADD COLUMN `hidden` BOOLEAN NOT NULL DEFAULT FALSE;

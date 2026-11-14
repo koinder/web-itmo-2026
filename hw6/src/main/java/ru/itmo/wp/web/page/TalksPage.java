@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.List;
 import java.util.HashMap;
 
+@SuppressWarnings("unused")
 public class TalksPage extends Page {
     private final TalkService talkService = new TalkService();
     private final UserService userService = new UserService();
