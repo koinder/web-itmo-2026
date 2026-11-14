@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @SuppressWarnings({"unused"})
-public class EnterPage {
+public class EnterPage extends Page {
     private final UserService userService = new UserService();
     private final EventRepository eventRepository = new EventRepositoryImpl();
 
@@ -33,8 +33,8 @@ public class EnterPage {
         event.setType(Event.Type.ENTER);
         eventRepository.save(event);
 
-        request.getSession().setAttribute("user", user);
-        request.getSession().setAttribute("message", "Hello, " + user.getLogin());
+        setUser(user);
+        setMessage("Hello, " + user.getLogin());
         throw new RedirectException("/index");
     }
 }

@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @SuppressWarnings({"unused"})
-public class NotFoundPage {
+public class NotFoundPage extends Page {
     private void action(HttpServletRequest request, Map<String, Object> view) {
         // No operations.
     }

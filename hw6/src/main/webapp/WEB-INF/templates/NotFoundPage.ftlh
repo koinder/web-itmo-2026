@@ -1,2 +1,6 @@
-<h1>404</h1>
-<p>Page not found</p>
+<#import "commons.ftlh" as c>
+
+<@c.page>
+    <h1>404</h1>
+    <p>Page not found</p>
+</@c.page>

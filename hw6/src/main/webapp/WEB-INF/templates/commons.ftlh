@@ -60,6 +60,7 @@
 </div>
 <footer>
     <a href="/index">Codeforces</a> &copy; by Mike Mirzayanov
+    <div>Users: ${userCount}</div>
 </footer>
 <#if message??>
 <script>
