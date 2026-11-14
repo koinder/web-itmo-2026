@@ -1,11 +1,5 @@
 package ru.itmo.wp.model.repository.impl;
 
-import ru.itmo.wp.model.database.DatabaseUtils;
-import ru.itmo.wp.model.domain.User;
-import ru.itmo.wp.model.exception.RepositoryException;
-import ru.itmo.wp.model.repository.UserRepository;
-
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,6 +8,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.sql.DataSource;
+
+import ru.itmo.wp.model.database.DatabaseUtils;
+import ru.itmo.wp.model.domain.User;
+import ru.itmo.wp.model.exception.RepositoryException;
+import ru.itmo.wp.model.repository.UserRepository;
 
 @SuppressWarnings("SqlNoDataSourceInspection")
 public class UserRepositoryImpl implements UserRepository {
@@ -116,6 +117,9 @@ public class UserRepositoryImpl implements UserRepository {
                 case "creationTime":
                     user.setCreationTime(resultSet.getTimestamp(i));
                     break;
+                case "admin":
+                    user.setAdmin(resultSet.getBoolean(i));
+                    break;
                 default:
                     // No operations.
             }
@@ -163,6 +167,22 @@ public class UserRepositoryImpl implements UserRepository {
             }
         } catch (SQLException e) {
             throw new RepositoryException("Can't count User.", e);
+        }
+    }
+
+    @Override
+    public void updateAdmin(long id, boolean admin) {
+        try (Connection connection = DATA_SOURCE.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement(
+                    "UPDATE `User` SET `admin`=? WHERE `id`=?")) {
+
+                statement.setBoolean(1, admin);
+                statement.setLong(2, id);
+
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RepositoryException("Can't update User admin status.", e);
         }
     }
 }

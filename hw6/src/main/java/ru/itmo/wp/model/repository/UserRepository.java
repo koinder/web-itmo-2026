@@ -1,8 +1,8 @@
 package ru.itmo.wp.model.repository;
 
-import ru.itmo.wp.model.domain.User;
-
 import java.util.List;
+
+import ru.itmo.wp.model.domain.User;
 
 public interface UserRepository {
     User find(long id);
@@ -18,4 +18,6 @@ public interface UserRepository {
     void save(User user, String passwordSha);
     
     long findCount();
+
+    void updateAdmin(long id, boolean admin);
 }

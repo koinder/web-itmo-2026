@@ -1,14 +1,15 @@
 package ru.itmo.wp.model.service;
 
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
 import com.google.common.base.Strings;
 import com.google.common.hash.Hashing;
+
 import ru.itmo.wp.model.domain.User;
 import ru.itmo.wp.model.exception.ValidationException;
 import ru.itmo.wp.model.repository.UserRepository;
 import ru.itmo.wp.model.repository.impl.UserRepositoryImpl;
-
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 public class UserService {
     private static final String PASSWORD_SALT = "1174f9d7bc21e00e9a5fd0a783a44c9a9f73413c";
@@ -86,5 +87,20 @@ public class UserService {
 
     private String getPasswordSha(String password) {
         return Hashing.sha256().hashBytes((PASSWORD_SALT + password).getBytes(StandardCharsets.UTF_8)).toString();
+    }
+
+    public User find(long id) {
+        return userRepository.find(id);
+    }
+
+    public void updateAdmin(long currentUserId, long id, boolean admin) throws ValidationException {
+        User currentUser = userRepository.find(currentUserId);
+        if (currentUser == null || !currentUser.isAdmin()) {
+            throw new ValidationException("Administrator rights are required");
+        }
+        if (userRepository.find(id) == null) {
+            throw new ValidationException("User does not exist");
+        }
+        userRepository.updateAdmin(id, admin);
     }
 }
