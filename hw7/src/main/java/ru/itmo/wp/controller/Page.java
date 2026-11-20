@@ -24,7 +24,13 @@ public class Page {
 
     @ModelAttribute("user")
     public User getUser(HttpSession httpSession) {
-        return userService.findById((Long) httpSession.getAttribute(USER_ID_SESSION_KEY));
+        User user = userService.findById(
+                (Long) httpSession.getAttribute(USER_ID_SESSION_KEY));
+        if (user != null && user.isDisabled()) {
+            unsetUser(httpSession);
+            return null;
+        }
+        return user;
     }
 
     @ModelAttribute("message")

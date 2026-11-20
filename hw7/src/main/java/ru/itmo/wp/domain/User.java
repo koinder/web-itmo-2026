@@ -28,6 +28,12 @@ public class User {
     @CreationTimestamp
     private Date creationTime;
 
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean disabled;
+
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean admin;
+
     public long getId() {
         return id;
     }
@@ -50,6 +56,22 @@ public class User {
 
     public void setCreationTime(Date creationTime) {
         this.creationTime = creationTime;
+    }
+
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 }
 
