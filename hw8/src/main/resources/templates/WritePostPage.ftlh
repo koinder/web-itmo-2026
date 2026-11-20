@@ -27,6 +27,16 @@
                     </div>
                     <@c.error "post.text"/>
                 </div>
+                <div class="field">
+                    <div class="name">
+                        <label for="tags">Tags</label>
+                    </div>
+                    <div class="value">
+                        <input id="tags" name="tags"
+                            value="${post.tags!}" placeholder="java spring"/>
+                    </div>
+                    <@c.error "post.tags"/>
+                </div>
                 <div class="button-field">
                     <input type="submit" value="Write">
                 </div>
