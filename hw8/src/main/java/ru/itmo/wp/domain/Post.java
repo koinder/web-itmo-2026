@@ -1,12 +1,24 @@
 package ru.itmo.wp.domain;
 
-import org.hibernate.annotations.CreationTimestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Date;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 /** @noinspection unused*/
 @Entity
@@ -33,6 +45,10 @@ public class Post {
 
     @CreationTimestamp
     private Date creationTime;
+
+    @OneToMany(mappedBy = "post")
+    @OrderBy("creationTime ASC, id ASC")
+    private List<Comment> comments = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -72,5 +88,13 @@ public class Post {
 
     public void setCreationTime(Date creationTime) {
         this.creationTime = creationTime;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 }
