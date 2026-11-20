@@ -91,6 +91,11 @@
     <article>
         <div class="title"><a href="<@spring.url '/post/${post.id?c}'/>">${post.title}</a></div>
         <div class="information">By ${post.user.login}, ${post.creationTime}</div>
+        <div class="tags">
+            <#list post.tags as tag>
+                <span>${tag.name}</span>
+            </#list>
+        </div>
         <div class="body">${post.text}</div>
         <ul class="attachment">
             <li>Announcement of <a href="#">Codeforces Round #510 (Div. 1)</a></li>
