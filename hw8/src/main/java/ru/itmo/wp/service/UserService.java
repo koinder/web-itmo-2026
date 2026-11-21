@@ -10,6 +10,7 @@ import ru.itmo.wp.repository.RoleRepository;
 import ru.itmo.wp.repository.UserRepository;
 import ru.itmo.wp.repository.TagRepository;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,6 +65,7 @@ public class UserService {
 
     @Transactional
     public void writePost(User user, Post post, Set<String> tagNames) {
+        Set<Tag> tags = new LinkedHashSet<>();
         for (String name : tagNames) {
             Tag tag = tagRepository.findByName(name);
             if (tag == null) {
@@ -71,8 +73,9 @@ public class UserService {
                 tag.setName(name);
                 tag = tagRepository.save(tag);
             }
-            post.getTags().add(tag);
+            tags.add(tag);
         }
+        post.getTags().addAll(tags);
         user.addPost(post);
         post.setUser(user);
         userRepository.save(user);

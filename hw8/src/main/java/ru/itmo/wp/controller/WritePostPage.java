@@ -1,6 +1,6 @@
 package ru.itmo.wp.controller;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.servlet.http.HttpSession;
@@ -39,7 +39,7 @@ public class WritePostPage extends Page {
     public String writePostPost(@Valid @ModelAttribute("post") PostForm form,
                                 BindingResult bindingResult,
                                 HttpSession httpSession) {
-        Set<String> tagNames = new HashSet<>();
+        Set<String> tagNames = new LinkedHashSet<>();
         String rawTags = form.getTags();
         if (rawTags != null && !rawTags.trim().isEmpty()) {
             for (String tag : rawTags.trim().split("\\s+")) {

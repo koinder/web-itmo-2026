@@ -2,9 +2,7 @@ package ru.itmo.wp.domain;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,6 +15,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -58,7 +57,8 @@ public class Post {
     @JoinTable(name = "post_tag",
             joinColumns = @JoinColumn(name = "post_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    private Set<Tag> tags = new HashSet<>();
+    @OrderColumn(name = "tag_order")
+    private List<Tag> tags = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -108,11 +108,11 @@ public class Post {
         this.comments = comments;
     }
 
-    public Set<Tag> getTags() {
+    public List<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(Set<Tag> tags) {
+    public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
 }
