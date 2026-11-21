@@ -45,9 +45,7 @@
                 <section>
                     <div class="header">Notice</div>
 
-                    <div class="body">
-                        ${notice.content}
-                    </div>
+                    <div class="body" style="white-space: pre-wrap; overflow-wrap: anywhere">${notice.content}</div>
 
                     <div class="footer">
                         ${notice.creationTime?datetime}
